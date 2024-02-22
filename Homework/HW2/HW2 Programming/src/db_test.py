@@ -89,5 +89,6 @@ class DBTest(unittest.TestCase):
 
         self.run_test_table(DB.build_delete_query, tests)
 
+        
 if __name__ == '__main__':
     unittest.main()

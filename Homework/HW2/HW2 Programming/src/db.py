@@ -55,7 +55,42 @@ class DB:
 		:param filters: Key-value pairs that the rows from table must satisfy
 		:returns: A query string and any placeholder arguments
 		"""
-		pass
+		# start with the SLECT
+		query_str = 'SELECT '
+
+		# add the 'rows' part
+		if len(rows) == 0:
+			query_str += '* '
+		else:
+			for i in range(len(rows) - 1):
+				query_str += rows[i]
+				query_str += ', '
+			
+			query_str += rows[-1]
+			query_str += ' '
+		
+		# add the FROM and the table
+		query_str += 'FROM '
+		query_str += table
+		query_str += ' '
+
+		# add the WHERE and the filter
+		replace_val = []
+
+		if len(filters) == 0:
+			query_str = query_str[:-1]
+		else:
+			query_str += 'WHERE '
+			for i in range(len(filters) - 1):
+				query_str += list(filters.keys())[i]
+				query_str += ' = %s AND '
+				replace_val.append(list(filters.values())[i])
+
+			query_str += list(filters.keys())[-1]
+			query_str += ' = %s'
+			replace_val.append(list(filters.values())[-1])
+
+		return query_str, replace_val
 
 	def select(self, table: str, rows: List[str], filters: KV) -> List[KV]:
 		"""Runs a select statement. You should use build_select_query and execute_query.
@@ -75,7 +110,34 @@ class DB:
 		:param values: Key-value pairs that represent the values to be inserted
 		:returns: A query string and any placeholder arguments
 		"""
-		pass
+		# begin with INSERT INTO
+		query_str = 'INSERT INTO '
+
+		# add table
+		query_str += table
+		query_str += ' ('
+
+		# add values key
+		keys = list(values.keys())
+		vls  = list(values.values())
+
+		for i in range(len(keys) - 1):
+			query_str += keys[i]
+			query_str += ', '
+
+		query_str += keys[-1]
+		query_str += ') VALUES ('
+
+		# add values values
+		replace_val = []
+		for i in range(len(vls) - 1):
+			query_str += '%s, '
+			replace_val.append(vls[i])
+
+		query_str += '%s)'
+		replace_val.append(vls[-1])
+
+		return query_str, replace_val
 
 	def insert(self, table: str, values: KV) -> int:
 		"""Runs an insert statement. You should use build_insert_query and execute_query.
@@ -95,7 +157,45 @@ class DB:
 		:param filters: Key-value pairs that the rows from table must satisfy
 		:returns: A query string and any placeholder arguments
 		"""
-		pass
+		# start with the SLECT
+		query_str = 'UPDATE '
+
+		# add the table and SET
+		query_str += table
+		query_str += ' SET '
+
+		# add the value
+		replace_val = []
+
+		values_key = list(values.keys())
+		values_val = list(values.values())
+		filter_key = list(filters.keys())
+		filter_val = list(filters.values())
+
+		for i in range(len(values_key) - 1):
+			query_str += values_key[i]
+			query_str += ' = %s, '
+			replace_val.append(values_val[i])
+
+		query_str += values_key[-1]
+		query_str += ' = %s'
+		replace_val.append(values_val[-1])
+
+		# add the filter
+		if len(filters) == 0:
+			pass
+		else:
+			query_str += ' WHERE '
+			for i in range(len(filter_key) - 1):
+				query_str += filter_key[i]
+				query_str += ' = %s AND '
+				replace_val.append(filter_val[i])
+
+			query_str += filter_key[-1]
+			query_str += ' = %s'
+			replace_val.append(filter_val[-1])
+		
+		return query_str, replace_val
 
 	def update(self, table: str, values: KV, filters: KV) -> int:
 		"""Runs an update statement. You should use build_update_query and execute_query.
@@ -115,7 +215,30 @@ class DB:
 		:param filters: Key-value pairs that the rows to be deleted must satisfy
 		:returns: A query string and any placeholder arguments
 		"""
-		pass
+		# start with the DELETE FROM
+		query_str = 'DELETE FROM '
+	
+		# add the table
+		query_str += table
+		query_str += ' '
+
+		# add the WHERE and the filter
+		replace_val = []
+
+		if len(filters) == 0:
+			query_str = query_str[:-1]
+		else:
+			query_str += 'WHERE '
+			for i in range(len(filters) - 1):
+				query_str += list(filters.keys())[i]
+				query_str += ' = %s AND '
+				replace_val.append(list(filters.values())[i])
+
+			query_str += list(filters.keys())[-1]
+			query_str += ' = %s'
+			replace_val.append(list(filters.values())[-1])
+
+		return query_str, replace_val
 
 	def delete(self, table: str, filters: KV) -> int:
 		"""Runs a delete statement. You should use build_delete_query and execute_query.
