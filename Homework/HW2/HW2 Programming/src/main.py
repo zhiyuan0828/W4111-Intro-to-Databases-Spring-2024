@@ -24,7 +24,7 @@ db = DB(
 	host="localhost",
 	port=3306,
 	user="root",
-	password="dbuserdbuser",
+	password="tzy123456",
 	database="s24_hw2",
 )
 
@@ -63,7 +63,20 @@ async def get_students(req: Request):
 	"""
 
 	# Use `dict(req.query_params)` to access query parameters
-	pass
+	query_param = dict(req.query_params)
+
+	# prep table, rows, and filters for select 
+	table = 'student'
+	rows  = []
+	if 'fields' in query_param.keys():
+		rows = list(query_param['fields'].split(','))
+
+	filters = query_param.copy()
+	if 'fields' in query_param.keys():
+		filters.pop('fields')
+
+	res = db.select(table, rows, filters)
+	return JSONResponse(content=res, status_code=status.HTTP_200_OK)
 
 @app.get("/students/{student_id}")
 async def get_student(student_id: int):
@@ -80,7 +93,16 @@ async def get_student(student_id: int):
 	:returns: If the student ID exists, a dict representing the student with HTTP status set to 200 OK.
 				If the student ID doesn't exist, the HTTP status should be set to 404 Not Found.
 	"""
-	pass
+	# prep table, rows, and filters for select 
+	table = 'student'
+	rows  = []
+	filters = {'student_id': student_id}
+
+	res = db.select(table, rows, filters)
+	if not res:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+	else:
+		return JSONResponse(content=res, status_code=status.HTTP_200_OK)
 
 @app.post("/students")
 async def post_student(req: Request):
@@ -109,7 +131,17 @@ async def post_student(req: Request):
 	"""
 
 	# Use `await req.json()` to access the request body
-	pass
+	query_param = await req.json()
+
+	# prep table, rows, and filters for select 
+	table = 'student'
+	
+	try:
+		res = db.insert(table, query_param)
+		return HTMLResponse(status_code=status.HTTP_201_CREATED)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.put("/students/{student_id}")
 async def put_student(student_id: int, req: Request):
@@ -138,7 +170,27 @@ async def put_student(student_id: int, req: Request):
 	"""
 
 	# Use `await req.json()` to access the request body
-	pass
+	query_param = await req.json()
+
+	# prep table, rows, and filters for select 
+	table = 'student'
+
+	values = query_param
+
+	filters = {'student_id': student_id}
+
+	# examine if the student exists
+	stu_existence = db.select(table, [], filters)
+	if not stu_existence:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+
+	# try to update
+	try:
+		res = db.update(table, values, filters)
+		return HTMLResponse(status_code=status.HTTP_200_OK)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.delete("/students/{student_id}")
 async def delete_student(student_id: int):
@@ -154,7 +206,21 @@ async def delete_student(student_id: int):
 	:returns: If the request is valid, the HTTP status should be set to 200 OK.
 				If the request is not valid, the HTTP status should be set to 404 Not Found.
 	"""
-	pass
+	# examine if the student exists
+	table = 'student'
+	filters = {'student_id': student_id}
+
+	stu_existence = db.select(table, [], filters)
+	if not stu_existence:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+	
+	# try to delete
+	try:
+		res = db.delete(table, filters)
+		return HTMLResponse(status_code=status.HTTP_200_OK)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 
 # --- EMPLOYEES ---
@@ -185,7 +251,20 @@ async def get_employees(req: Request):
 	"""
 
 	# Use `dict(req.query_params)` to access query parameters
-	pass
+	query_param = dict(req.query_params)
+
+	# prep table, rows, and filters for select 
+	table = 'employee'
+	rows  = []
+	if 'fields' in query_param.keys():
+		rows = list(query_param['fields'].split(','))
+
+	filters = query_param.copy()
+	if 'fields' in query_param.keys():
+		filters.pop('fields')
+
+	res = db.select(table, rows, filters)
+	return JSONResponse(content=res, status_code=status.HTTP_200_OK)
 
 @app.get("/employees/{employee_id}")
 async def get_employee(employee_id: int):
@@ -202,7 +281,16 @@ async def get_employee(employee_id: int):
 	:returns: If the employee ID exists, a dict representing the employee with HTTP status set to 200 OK.
 				If the employee ID doesn't exist, the HTTP status should be set to 404 Not Found.
 	"""
-	pass
+	# prep table, rows, and filters for select 
+	table = 'employee'
+	rows  = []
+	filters = {'employee_id': employee_id}
+
+	res = db.select(table, rows, filters)
+	if not res:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+	else:
+		return JSONResponse(content=res, status_code=status.HTTP_200_OK)
 
 @app.post("/employees")
 async def post_employee(req: Request):
@@ -231,7 +319,17 @@ async def post_employee(req: Request):
 	"""
 
 	# Use `await req.json()` to access the request body
-	pass
+	query_param = await req.json()
+
+	# prep table, rows, and filters for select 
+	table = 'employee'
+	
+	try:
+		res = db.insert(table, query_param)
+		return HTMLResponse(status_code=status.HTTP_201_CREATED)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.put("/employees/{employee_id}")
 async def put_employee(employee_id: int, req: Request):
@@ -260,7 +358,27 @@ async def put_employee(employee_id: int, req: Request):
 	"""
 
 	# Use `await req.json()` to access the request body
-	pass
+	query_param = await req.json()
+
+	# prep table, rows, and filters for select 
+	table = 'employee'
+
+	values = query_param
+
+	filters = {'employee_id': employee_id}
+
+	# examine if the student exists
+	stu_existence = db.select(table, [], filters)
+	if not stu_existence:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+
+	# try to update
+	try:
+		res = db.update(table, values, filters)
+		return HTMLResponse(status_code=status.HTTP_200_OK)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.delete("/employees/{employee_id}")
 async def delete_employee(employee_id: int):
@@ -276,7 +394,21 @@ async def delete_employee(employee_id: int):
 	:returns: If the request is valid, the HTTP status should be set to 200 OK.
 				If the request is not valid, the HTTP status should be set to 404 Not Found.
 	"""
-	pass
+	# examine if the employee exists
+	table = 'employee'
+	filters = {'employee_id': employee_id}
+
+	stu_existence = db.select(table, [], filters)
+	if not stu_existence:
+		return HTMLResponse(status_code=status.HTTP_404_NOT_FOUND)
+	
+	# try to delete
+	try:
+		res = db.delete(table, filters)
+		return HTMLResponse(status_code=status.HTTP_200_OK)
+	except Exception as e:
+		print(e)
+		return HTMLResponse(status_code=status.HTTP_400_BAD_REQUEST)
 
 if __name__ == "__main__":
 	uvicorn.run(app, host="0.0.0.0", port=8002)

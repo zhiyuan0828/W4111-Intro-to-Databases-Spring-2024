@@ -100,7 +100,9 @@ class DB:
 		:param filters: Key-value pairs that the rows to be selected must satisfy
 		:returns: The selected rows
 		"""
-		pass
+		query_str, replace_val = self.build_select_query(table, rows, filters)
+
+		return self.execute_query(query_str, replace_val, True)
 
 	@staticmethod
 	def build_insert_query(table: str, values: KV) -> Query:
@@ -146,7 +148,9 @@ class DB:
 		:param values: Key-value pairs that represent the values to be inserted
 		:returns: The number of rows affected
 		"""
-		pass
+		query_str, replace_val = self.build_insert_query(table, values)
+
+		return self.execute_query(query_str, replace_val, False)
 
 	@staticmethod
 	def build_update_query(table: str, values: KV, filters: KV) -> Query:
@@ -205,7 +209,9 @@ class DB:
 		:param filters: Key-value pairs that the rows to be updated must satisfy
 		:returns: The number of rows affected
 		"""
-		pass
+		query_str, replace_val = self.build_update_query(table, values, filters)
+
+		return self.execute_query(query_str, replace_val, False)
 
 	@staticmethod
 	def build_delete_query(table: str, filters: KV) -> Query:
@@ -247,4 +253,6 @@ class DB:
 		:param filters: Key-value pairs that the rows to be deleted must satisfy
 		:returns: The number of rows affected
 		"""
-		pass
+		query_str, replace_val = self.build_delete_query(table, filters)
+
+		return self.execute_query(query_str, replace_val, False)
