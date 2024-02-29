@@ -47,11 +47,11 @@ class DB:
 
 
 	@staticmethod
-	def build_select_query(table: str, rows: List[str], filters: KV) -> Query:
+	def build_select_query(table: str, columns: List[str], filters: KV) -> Query:
 		"""Builds a query that selects rows. See db_test for examples.
 
 		:param table: The table to be selected from
-		:param rows: The attributes to select. If empty, then selects all rows.
+		:param columns: The attributes to select. If empty, then selects all columns.
 		:param filters: Key-value pairs that the rows from table must satisfy
 		:returns: A query string and any placeholder arguments
 		"""
@@ -92,11 +92,11 @@ class DB:
 
 		return query_str, replace_val
 
-	def select(self, table: str, rows: List[str], filters: KV) -> List[KV]:
+	def select(self, table: str, columns: List[str], filters: KV) -> List[KV]:
 		"""Runs a select statement. You should use build_select_query and execute_query.
 
 		:param table: The table to be selected from
-		:param rows: The attributes to select. If empty, then selects all rows.
+		:param columns: The attributes to select. If empty, then selects all columns.
 		:param filters: Key-value pairs that the rows to be selected must satisfy
 		:returns: The selected rows
 		"""
