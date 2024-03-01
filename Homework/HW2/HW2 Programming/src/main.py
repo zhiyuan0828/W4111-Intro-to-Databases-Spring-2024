@@ -41,6 +41,14 @@ async def healthcheck():
 async def get_students(req: Request):
 	"""Gets all students that satisfy the specified query parameters.
 
+	GET http://0.0.0.0:8002/students?email=dff9@columbia.edu&iq=50
+
+	select * from students where email='dff9@columbia.edu' and iq='50'
+
+	GET http://0.0.0.0:8002/students?email=dff9@columbia.edu&iq=50&fields=last_name,iq
+
+	select last_name, iq from students where email='dff9@columbia.edu' and iq='50'
+
 	For instance,
 		GET http://0.0.0.0:8002/students
 	should return all attributes for all students.
